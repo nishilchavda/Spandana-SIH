@@ -1,0 +1,81 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+@import "tailwindcss";
+
+/* ============================================================
+   SPANDANA — Ultra-Minimalist Light Theme
+   Apple Health inspired, pixel-perfect, crisp.
+   ============================================================ */
+
+:root {
+  /* Surfaces */
+  --bg: #FFFFFF;
+  --surface: #F8FAFC;
+  --surface-hover: #F1F5F9;
+  
+  /* Borders - Crisp 1px */
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
+
+  /* Text hierarchy - Slate */
+  --text-1: #0F172A;
+  --text-2: #475569;
+  --text-3: #94A3B8;
+  --text-inverse: #FFFFFF;
+
+  /* Accents - Striking neon */
+  --accent-primary: #22C55E; /* Activity Green */
+  --accent-secondary: #3B82F6; /* Electric Blue */
+  --accent-move: #FF3B30;
+  --accent-exercise: #22C55E;
+  --accent-stand: #3B82F6;
+  --accent-amber: #FF9F0A;
+
+  /* Typography */
+  --font-display: -apple-system, "SF Pro Display", "Inter", sans-serif;
+  --font-body: "Inter", -apple-system, sans-serif;
+
+  /* Minimal shadows - focusing on borders mostly */
+  --shadow-subtle: 0 4px 20px -2px rgba(15, 23, 42, 0.03);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: rgba(34, 197, 94, 0.2);
+  color: var(--text-1);
+}
+
+/* Card Surface */
+.fc-card {
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-subtle);
+  border-radius: 24px;
+}
+
+/* Typography utilities */
+.font-display { font-family: var(--font-display); }
+.font-body { font-family: var(--font-body); }
+.metric-display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Recharts overrides */
+.recharts-tooltip-wrapper { outline: none !important; }
+.recharts-cartesian-grid-horizontal line,
+.recharts-cartesian-grid-vertical line {
+  stroke: var(--surface) !important;
+}
