@@ -4,13 +4,15 @@
 
 require("dotenv").config();
 
-const express   = require("express");
-const http      = require("http");
-const { Server } = require("socket.io");
-const mongoose  = require("mongoose");
-const cors      = require("cors");
+const express      = require("express");
+const http         = require("http");
+const { Server }   = require("socket.io");
+const mongoose     = require("mongoose");
+const cors         = require("cors");
+const cookieParser = require("cookie-parser");
 
 const authRoutes     = require("./routes/auth");
+const profileRoutes  = require("./routes/profile");
 const sessionRoutes  = require("./routes/sessions");
 const { analyticsRouter, getSuggestions } = require("./routes/analytics");
 const { startLiveSensorStream, stopLiveSensorStream } = require("./services/sensorStream");
@@ -21,20 +23,23 @@ const { startLiveSensorStream, stopLiveSensorStream } = require("./services/sens
 const app    = express();
 const server = http.createServer(app);
 
-// CORS — allow the Next.js dev origin
+// CORS — exact origin required; wildcard '*' blocks credentialed requests
 const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
 app.use(cors({
-  origin: corsOrigin,
-  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  origin:      corsOrigin,
+  credentials: true,   // allows browser to send/receive cookies cross-origin
+  methods:     ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
 app.use(express.json());
+app.use(cookieParser()); // must come after express.json() — parses req.cookies
 
 // ---------------------------------------------------------------------------
 // REST Routes
 // ---------------------------------------------------------------------------
 app.use("/api/auth",      authRoutes);
+app.use("/api/profile",   profileRoutes);
 app.use("/api/sessions",  sessionRoutes);
 app.use("/api/analytics", analyticsRouter);
 app.get("/api/suggestions", getSuggestions);

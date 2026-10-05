@@ -10,10 +10,13 @@
 |---|---|
 | Frontend UI | ✅ Real (Next.js 16, TypeScript, Framer Motion) |
 | Dashboard analytics | ✅ Real (served from MongoDB via Express REST API) |
+| Auth & User Profile | ✅ Real (MongoDB + JWT) |
 | Session / rep persistence | ✅ Real (MongoDB — every live session is stored) |
 | Sensor data stream | ⚠️ **Server-simulated** — physics-inspired waveform (identical to real IMU output shape). No physical ESP32/IMU hardware is connected yet. |
 | Form detection | ⚠️ **Rule-based placeholder** — angle thresholds flag form errors. No trained ML model yet. |
 | AI suggestions | ⚠️ **Rule-derived from session history** — not a trained language model. Phase 2 will replace with a Python/ML microservice. |
+
+> **Note:** Auth and user profile are fully real (MongoDB + JWT). Workout/sensor data is still simulated — pending hardware integration.
 
 > **Why server-simulated?** The IMU firmware (ESP32 + MPU-6050) is in development. The backend simulation uses the same data shape and noise model as the planned real hardware, so swapping sources is a one-line config change.
 

@@ -1,8 +1,9 @@
 // =============================================================================
 // SPANDANA — Auth Context
 // =============================================================================
-// Provides login / signup / logout + persists the JWT token in localStorage.
-// Wrap the app in <AuthProvider> to use useAuth() in any client component.
+// The JWT lives in an httpOnly cookie set by the backend — this file NEVER
+// touches the token directly. Client JS can't read httpOnly cookies.
+// All auth state is derived from the user object returned in response bodies.
 // =============================================================================
 
 "use client";
@@ -24,15 +25,23 @@ export interface AuthUser {
   id:    string;
   email: string;
   name:  string;
+  profile?: {
+    profileComplete: boolean;
+    weight?:         number;
+    height?:         number;
+    dateOfBirth?:    string;
+    gender?:         string;
+    fitnessGoal?:    string;
+  };
 }
 
 interface AuthState {
-  user:    AuthUser | null;
-  token:   string | null;
-  loading: boolean;
-  login:   (email: string, password: string) => Promise<void>;
-  signup:  (name: string, email: string, password: string) => Promise<void>;
-  logout:  () => void;
+  user:       AuthUser | null;
+  loading:    boolean;
+  login:      (email: string, password: string) => Promise<AuthUser>;
+  signup:     (name: string, email: string, password: string, confirmPassword: string) => Promise<AuthUser>;
+  logout:     () => Promise<void>;
+  updateUser: (user: AuthUser) => void;
 }
 
 // ---------------------------------------------------------------------------
@@ -41,19 +50,23 @@ interface AuthState {
 
 const AuthContext = createContext<AuthState | null>(null);
 
-const API_URL    = process.env.NEXT_PUBLIC_API_URL ?? "";
-const TOKEN_KEY  = "spandana_token";
-const USER_KEY   = "spandana_user";
+const API_URL  = process.env.NEXT_PUBLIC_API_URL ?? "";
+const USER_KEY = "spandana_user"; // only non-sensitive user object; no token
 
-async function authFetch(path: string, body: object) {
+/**
+ * POST to auth endpoints with credentials:include so the browser attaches
+ * and receives the httpOnly cookie automatically.
+ */
+async function authFetch(path: string, body: object): Promise<{ user: AuthUser }> {
   const res = await fetch(`${API_URL}${path}`, {
-    method:  "POST",
-    headers: { "Content-Type": "application/json" },
-    body:    JSON.stringify(body),
+    method:      "POST",
+    credentials: "include",           // ← critical: sends/receives cookies
+    headers:     { "Content-Type": "application/json" },
+    body:        JSON.stringify(body),
   });
   const data = await res.json();
   if (!res.ok) throw new Error(data.error ?? "Request failed");
-  return data as { token: string; user: AuthUser };
+  return data as { user: AuthUser };
 }
 
 // ---------------------------------------------------------------------------
@@ -62,18 +75,15 @@ async function authFetch(path: string, body: object) {
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user,    setUser]    = useState<AuthUser | null>(null);
-  const [token,   setToken]   = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Rehydrate from localStorage on mount
+  // On mount: try to restore user from localStorage (non-sensitive).
+  // The httpOnly cookie will be validated server-side when a protected
+  // API call is made — we just need user info for the UI.
   useEffect(() => {
     try {
-      const savedToken = localStorage.getItem(TOKEN_KEY);
-      const savedUser  = localStorage.getItem(USER_KEY);
-      if (savedToken && savedUser) {
-        setToken(savedToken);
-        setUser(JSON.parse(savedUser));
-      }
+      const saved = localStorage.getItem(USER_KEY);
+      if (saved) setUser(JSON.parse(saved));
     } catch {
       /* ignore parse errors */
     } finally {
@@ -81,32 +91,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const persist = useCallback((t: string, u: AuthUser) => {
-    localStorage.setItem(TOKEN_KEY, t);
+  const persistUser = useCallback((u: AuthUser) => {
     localStorage.setItem(USER_KEY, JSON.stringify(u));
-    setToken(t);
+    setUser(u);
+  }, []);
+
+  const updateUser = useCallback((u: AuthUser) => {
+    localStorage.setItem(USER_KEY, JSON.stringify(u));
     setUser(u);
   }, []);
 
   const login = useCallback(async (email: string, password: string) => {
-    const { token: t, user: u } = await authFetch("/auth/login", { email, password });
-    persist(t, u);
-  }, [persist]);
+    const { user: u } = await authFetch("/auth/login", { email, password });
+    persistUser(u);
+    return u;
+  }, [persistUser]);
 
-  const signup = useCallback(async (name: string, email: string, password: string) => {
-    const { token: t, user: u } = await authFetch("/auth/register", { name, email, password });
-    persist(t, u);
-  }, [persist]);
+  const signup = useCallback(
+    async (name: string, email: string, password: string, confirmPassword: string) => {
+      const { user: u } = await authFetch("/auth/signup", { name, email, password, confirmPassword });
+      persistUser(u);
+      return u;
+    },
+    [persistUser]
+  );
 
-  const logout = useCallback(() => {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(USER_KEY);
-    setToken(null);
-    setUser(null);
+  /**
+   * Logout calls the backend to clear the httpOnly cookie, then clears
+   * local UI state. Client JS cannot clear an httpOnly cookie itself.
+   */
+  const logout = useCallback(async () => {
+    try {
+      await fetch(`${API_URL}/auth/logout`, {
+        method:      "POST",
+        credentials: "include",
+      });
+    } catch {
+      /* best-effort — still clear local state */
+    } finally {
+      localStorage.removeItem(USER_KEY);
+      setUser(null);
+    }
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, signup, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, signup, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   );

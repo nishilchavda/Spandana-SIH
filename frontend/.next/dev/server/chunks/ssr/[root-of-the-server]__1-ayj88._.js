@@ -543,11 +543,13 @@ const navLinks = [
     },
     {
         href: "/demo",
-        label: "Live Demo"
+        label: "Live Demo",
+        protected: true
     },
     {
         href: "/dashboard",
-        label: "Dashboard"
+        label: "Dashboard",
+        protected: true
     },
     {
         href: "/about",
@@ -568,8 +570,8 @@ function Navbar() {
         });
         return ()=>window.removeEventListener("scroll", handler);
     }, []);
-    function handleLogout() {
-        logout();
+    async function handleLogout() {
+        await logout();
         setUserMenuOpen(false);
         router.push("/");
     }
@@ -620,7 +622,7 @@ function Navbar() {
                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                             className: "hidden md:flex items-center gap-6",
                             children: [
-                                navLinks.map((link)=>{
+                                navLinks.filter((l)=>!l.protected || user).map((link)=>{
                                     const active = pathname === link.href;
                                     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                                         href: link.href,
@@ -709,7 +711,7 @@ function Navbar() {
                                                             columnNumber: 27
                                                         }, this),
                                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
-                                                            href: "/dashboard",
+                                                            href: "/profile",
                                                             onClick: ()=>setUserMenuOpen(false),
                                                             className: "flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--text-2)] hover:text-[var(--text-1)] hover:bg-[var(--surface)] transition-colors",
                                                             children: [
@@ -720,7 +722,7 @@ function Navbar() {
                                                                     lineNumber: 107,
                                                                     columnNumber: 29
                                                                 }, this),
-                                                                " Dashboard"
+                                                                " Profile"
                                                             ]
                                                         }, void 0, true, {
                                                             fileName: "[project]/src/components/Navbar.tsx",
@@ -869,7 +871,7 @@ function Navbar() {
                     children: /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("div", {
                         className: "px-6 py-6 flex flex-col gap-4",
                         children: [
-                            navLinks.map((link)=>{
+                            navLinks.filter((l)=>!l.protected || user).map((link)=>{
                                 const active = pathname === link.href;
                                 return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
                                     href: link.href,
@@ -903,6 +905,25 @@ function Navbar() {
                                             lineNumber: 188,
                                             columnNumber: 23
                                         }, this),
+                                        /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
+                                            href: "/profile",
+                                            onClick: ()=>setMobileOpen(false),
+                                            className: "flex items-center gap-2 text-sm font-semibold text-[var(--text-1)]",
+                                            children: [
+                                                /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$lucide$2d$react$2f$dist$2f$esm$2f$icons$2f$user$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__default__as__User$3e$__["User"], {
+                                                    className: "w-4 h-4"
+                                                }, void 0, false, {
+                                                    fileName: "[project]/src/components/Navbar.tsx",
+                                                    lineNumber: 194,
+                                                    columnNumber: 25
+                                                }, this),
+                                                " Profile"
+                                            ]
+                                        }, void 0, true, {
+                                            fileName: "[project]/src/components/Navbar.tsx",
+                                            lineNumber: 189,
+                                            columnNumber: 23
+                                        }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("button", {
                                             onClick: ()=>{
                                                 handleLogout();
@@ -914,14 +935,14 @@ function Navbar() {
                                                     className: "w-4 h-4"
                                                 }, void 0, false, {
                                                     fileName: "[project]/src/components/Navbar.tsx",
-                                                    lineNumber: 193,
+                                                    lineNumber: 200,
                                                     columnNumber: 25
                                                 }, this),
                                                 " Log out"
                                             ]
                                         }, void 0, true, {
                                             fileName: "[project]/src/components/Navbar.tsx",
-                                            lineNumber: 189,
+                                            lineNumber: 196,
                                             columnNumber: 23
                                         }, this)
                                     ]
@@ -938,7 +959,7 @@ function Navbar() {
                                             children: "Log in"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Navbar.tsx",
-                                            lineNumber: 198,
+                                            lineNumber: 205,
                                             columnNumber: 23
                                         }, this),
                                         /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(__TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$client$2f$app$2d$dir$2f$link$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"], {
@@ -948,13 +969,13 @@ function Navbar() {
                                             children: "Sign up"
                                         }, void 0, false, {
                                             fileName: "[project]/src/components/Navbar.tsx",
-                                            lineNumber: 199,
+                                            lineNumber: 206,
                                             columnNumber: 23
                                         }, this)
                                     ]
                                 }, void 0, true, {
                                     fileName: "[project]/src/components/Navbar.tsx",
-                                    lineNumber: 197,
+                                    lineNumber: 204,
                                     columnNumber: 21
                                 }, this))
                             }, void 0, false, {
@@ -1000,8 +1021,9 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 // =============================================================================
 // SPANDANA — Auth Context
 // =============================================================================
-// Provides login / signup / logout + persists the JWT token in localStorage.
-// Wrap the app in <AuthProvider> to use useAuth() in any client component.
+// The JWT lives in an httpOnly cookie set by the backend — this file NEVER
+// touches the token directly. Client JS can't read httpOnly cookies.
+// All auth state is derived from the user object returned in response bodies.
 // =============================================================================
 "use client";
 ;
@@ -1011,11 +1033,14 @@ var __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist
 // ---------------------------------------------------------------------------
 const AuthContext = /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createContext"])(null);
 const API_URL = ("TURBOPACK compile-time value", "http://localhost:4000/api") ?? "";
-const TOKEN_KEY = "spandana_token";
-const USER_KEY = "spandana_user";
-async function authFetch(path, body) {
+const USER_KEY = "spandana_user"; // only non-sensitive user object; no token
+/**
+ * POST to auth endpoints with credentials:include so the browser attaches
+ * and receives the httpOnly cookie automatically.
+ */ async function authFetch(path, body) {
     const res = await fetch(`${API_URL}${path}`, {
         method: "POST",
+        credentials: "include",
         headers: {
             "Content-Type": "application/json"
         },
@@ -1027,66 +1052,77 @@ async function authFetch(path, body) {
 }
 function AuthProvider({ children }) {
     const [user, setUser] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
-    const [token, setToken] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(null);
     const [loading, setLoading] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useState"])(true);
-    // Rehydrate from localStorage on mount
+    // On mount: try to restore user from localStorage (non-sensitive).
+    // The httpOnly cookie will be validated server-side when a protected
+    // API call is made — we just need user info for the UI.
     (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useEffect"])(()=>{
         try {
-            const savedToken = localStorage.getItem(TOKEN_KEY);
-            const savedUser = localStorage.getItem(USER_KEY);
-            if (savedToken && savedUser) {
-                setToken(savedToken);
-                setUser(JSON.parse(savedUser));
-            }
+            const saved = localStorage.getItem(USER_KEY);
+            if (saved) setUser(JSON.parse(saved));
         } catch  {
         /* ignore parse errors */ } finally{
             setLoading(false);
         }
     }, []);
-    const persist = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])((t, u)=>{
-        localStorage.setItem(TOKEN_KEY, t);
+    const persistUser = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])((u)=>{
         localStorage.setItem(USER_KEY, JSON.stringify(u));
-        setToken(t);
+        setUser(u);
+    }, []);
+    const updateUser = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])((u)=>{
+        localStorage.setItem(USER_KEY, JSON.stringify(u));
         setUser(u);
     }, []);
     const login = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])(async (email, password)=>{
-        const { token: t, user: u } = await authFetch("/auth/login", {
+        const { user: u } = await authFetch("/auth/login", {
             email,
             password
         });
-        persist(t, u);
+        persistUser(u);
+        return u;
     }, [
-        persist
+        persistUser
     ]);
-    const signup = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])(async (name, email, password)=>{
-        const { token: t, user: u } = await authFetch("/auth/register", {
+    const signup = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])(async (name, email, password, confirmPassword)=>{
+        const { user: u } = await authFetch("/auth/signup", {
             name,
             email,
-            password
+            password,
+            confirmPassword
         });
-        persist(t, u);
+        persistUser(u);
+        return u;
     }, [
-        persist
+        persistUser
     ]);
-    const logout = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])(()=>{
-        localStorage.removeItem(TOKEN_KEY);
-        localStorage.removeItem(USER_KEY);
-        setToken(null);
-        setUser(null);
+    /**
+   * Logout calls the backend to clear the httpOnly cookie, then clears
+   * local UI state. Client JS cannot clear an httpOnly cookie itself.
+   */ const logout = (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["useCallback"])(async ()=>{
+        try {
+            await fetch(`${API_URL}/auth/logout`, {
+                method: "POST",
+                credentials: "include"
+            });
+        } catch  {
+        /* best-effort — still clear local state */ } finally{
+            localStorage.removeItem(USER_KEY);
+            setUser(null);
+        }
     }, []);
     return /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])(AuthContext.Provider, {
         value: {
             user,
-            token,
             loading,
             login,
             signup,
-            logout
+            logout,
+            updateUser
         },
         children: children
     }, void 0, false, {
         fileName: "[project]/src/lib/authContext.tsx",
-        lineNumber: 109,
+        lineNumber: 138,
         columnNumber: 5
     }, this);
 }

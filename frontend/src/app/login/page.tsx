@@ -31,8 +31,12 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      await login(email, password);
-      router.push("/dashboard");
+      const u = await login(email, password);
+      if (u.profile?.profileComplete) {
+        router.push("/dashboard");
+      } else {
+        router.push("/complete-profile");
+      }
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Login failed. Please try again.");
     } finally {

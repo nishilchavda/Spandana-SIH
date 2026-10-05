@@ -9,8 +9,8 @@ import { useAuth } from "@/lib/authContext";
 
 const navLinks = [
   { href: "/",          label: "Home"         },
-  { href: "/demo",      label: "Live Demo"    },
-  { href: "/dashboard", label: "Dashboard"    },
+  { href: "/demo",      label: "Live Demo",   protected: true },
+  { href: "/dashboard", label: "Dashboard",   protected: true },
   { href: "/about",     label: "How It Works" },
 ];
 
@@ -28,8 +28,8 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handler);
   }, []);
 
-  function handleLogout() {
-    logout();
+  async function handleLogout() {
+    await logout();
     setUserMenuOpen(false);
     router.push("/");
   }
@@ -55,7 +55,7 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-6">
-            {navLinks.map((link) => {
+            {navLinks.filter(l => !l.protected || user).map((link) => {
               const active = pathname === link.href;
               return (
                 <Link
@@ -100,11 +100,11 @@ export default function Navbar() {
                             <p className="text-sm font-semibold text-[var(--text-1)] truncate mt-0.5">{user.email}</p>
                           </div>
                           <Link
-                            href="/dashboard"
+                            href="/profile"
                             onClick={() => setUserMenuOpen(false)}
                             className="flex items-center gap-2 px-4 py-2.5 text-sm text-[var(--text-2)] hover:text-[var(--text-1)] hover:bg-[var(--surface)] transition-colors"
                           >
-                            <User className="w-4 h-4" /> Dashboard
+                            <User className="w-4 h-4" /> Profile
                           </Link>
                           <button
                             onClick={handleLogout}
@@ -165,7 +165,7 @@ export default function Navbar() {
             className="fixed top-[72px] left-0 right-0 z-40 bg-white border-b border-[var(--border)] md:hidden"
           >
             <div className="px-6 py-6 flex flex-col gap-4">
-              {navLinks.map((link) => {
+              {navLinks.filter(l => !l.protected || user).map((link) => {
                 const active = pathname === link.href;
                 return (
                   <Link
@@ -186,6 +186,13 @@ export default function Navbar() {
                   user ? (
                     <>
                       <p className="text-sm text-[var(--text-2)]">Signed in as <strong>{user.name}</strong></p>
+                      <Link
+                        href="/profile"
+                        onClick={() => setMobileOpen(false)}
+                        className="flex items-center gap-2 text-sm font-semibold text-[var(--text-1)]"
+                      >
+                        <User className="w-4 h-4" /> Profile
+                      </Link>
                       <button
                         onClick={() => { handleLogout(); setMobileOpen(false); }}
                         className="flex items-center gap-2 text-sm font-semibold text-red-600"

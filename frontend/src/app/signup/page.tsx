@@ -15,6 +15,8 @@ export default function SignupPage() {
   const emailRef    = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
 
+  const confirmPasswordRef = useRef<HTMLInputElement>(null);
+
   const [error,   setError]   = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
@@ -25,8 +27,9 @@ export default function SignupPage() {
     const name     = nameRef.current?.value.trim()     ?? "";
     const email    = emailRef.current?.value.trim()    ?? "";
     const password = passwordRef.current?.value.trim() ?? "";
+    const confirmPassword = confirmPasswordRef.current?.value.trim() ?? "";
 
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !confirmPassword) {
       setError("Please fill in all fields.");
       return;
     }
@@ -34,11 +37,15 @@ export default function SignupPage() {
       setError("Password must be at least 6 characters.");
       return;
     }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
 
     setLoading(true);
     try {
-      await signup(name, email, password);
-      router.push("/dashboard");
+      await signup(name, email, password, confirmPassword);
+      router.push("/complete-profile");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Sign up failed. Please try again.");
     } finally {
@@ -129,6 +136,27 @@ export default function SignupPage() {
                   ref={passwordRef}
                   type="password"
                   placeholder="At least 6 characters"
+                  className="w-full pl-11 pr-4 py-3 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-[var(--text-1)] placeholder-[var(--text-3)] focus:outline-none focus:border-[var(--text-1)] focus:ring-1 focus:ring-[var(--text-1)] transition-all font-body text-sm"
+                  required
+                  autoComplete="new-password"
+                  minLength={6}
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-[var(--text-2)] uppercase tracking-widest mb-2" htmlFor="confirmPassword">
+                Confirm Password
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                  <Lock className="w-4 h-4 text-[var(--text-3)]" />
+                </div>
+                <input
+                  id="confirmPassword"
+                  ref={confirmPasswordRef}
+                  type="password"
+                  placeholder="Repeat password"
                   className="w-full pl-11 pr-4 py-3 bg-[var(--surface)] border border-[var(--border)] rounded-xl text-[var(--text-1)] placeholder-[var(--text-3)] focus:outline-none focus:border-[var(--text-1)] focus:ring-1 focus:ring-[var(--text-1)] transition-all font-body text-sm"
                   required
                   autoComplete="new-password"
