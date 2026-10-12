@@ -1,1 +1,21 @@
+node_modules
+/.pnp
+.pnp.*
+.yarn/*
+
+# Next.js build output
+.next/
+out/
+build/
+dist/
+
+# Vercel
 .vercel
+
+# Environment files
+.env*.local
+.env
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
