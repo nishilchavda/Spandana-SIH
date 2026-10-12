@@ -3,12 +3,25 @@
 import { useAuth } from "@/lib/authContext";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { User, Mail, Activity, Calendar, Edit3, LogOut, Loader2 } from "lucide-react";
+import { Mail, Activity, Edit3, LogOut, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
+
+// ---------------------------------------------------------------------------
+// Profile shape returned by GET /api/profile
+// ---------------------------------------------------------------------------
+interface ProfileData {
+  dateOfBirth?: string;
+  weight?: number;
+  height?: number;
+  gender?: string;
+  fitnessGoal?: string;
+  profileComplete?: boolean;
+}
 
 export default function ProfilePage() {
   const { user, logout, updateUser } = useAuth();
   const router = useRouter();
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [loading, setLoading] = useState(false);
 
   // Fetch latest profile on mount
@@ -37,8 +50,9 @@ export default function ProfilePage() {
     );
   }
 
-  const profile = user.profile || {};
-  let age = null;
+  const profile = (user.profile || {}) as ProfileData;
+
+  let age: number | null = null;
   if (profile.dateOfBirth) {
     const dob = new Date(profile.dateOfBirth);
     const diff = Date.now() - dob.getTime();
@@ -106,7 +120,7 @@ export default function ProfilePage() {
               <h3 className="text-lg font-bold text-[var(--text-1)] mb-6 flex items-center gap-2">
                 <Activity className="w-5 h-5 text-[var(--accent-primary)]" /> Physical Attributes
               </h3>
-              
+
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-8 gap-x-4">
                 <ProfileStat label="Weight" value={profile.weight ? `${profile.weight} kg` : "--"} />
                 <ProfileStat label="Height" value={profile.height ? `${profile.height} cm` : "--"} />
@@ -114,7 +128,7 @@ export default function ProfilePage() {
                 <ProfileStat label="Gender" value={profile.gender || "Unspecified"} />
                 <ProfileStat label="Fitness Goal" value={profile.fitnessGoal || "Unspecified"} className="sm:col-span-2" />
               </div>
-              
+
               {!profile.profileComplete && (
                 <div className="mt-8 p-4 bg-amber-50 border border-amber-200 rounded-xl flex items-start gap-3">
                   <Activity className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
@@ -123,7 +137,7 @@ export default function ProfilePage() {
                     <p className="text-sm text-amber-700 mt-1">
                       Complete your profile to unlock full tracking and analytics features.
                     </p>
-                    <button 
+                    <button
                       onClick={() => router.push("/complete-profile")}
                       className="mt-3 text-xs font-bold bg-amber-100 hover:bg-amber-200 text-amber-800 px-3 py-1.5 rounded-full transition-colors"
                     >
@@ -140,7 +154,15 @@ export default function ProfilePage() {
   );
 }
 
-function ProfileStat({ label, value, className = "" }: { label: string; value: string; className?: string }) {
+function ProfileStat({
+  label,
+  value,
+  className = "",
+}: {
+  label: string;
+  value: string;
+  className?: string;
+}) {
   return (
     <div className={className}>
       <p className="text-xs font-bold text-[var(--text-3)] uppercase tracking-widest mb-1">{label}</p>
