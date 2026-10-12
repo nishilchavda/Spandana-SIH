@@ -6,15 +6,6 @@ import { motion } from "framer-motion";
 import { User, Mail, Activity, Calendar, Edit3, LogOut, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
-interface ProfileData {
-  dateOfBirth?: string;
-  weight?: number | string;
-  height?: number | string;
-  gender?: string;
-  fitnessGoal?: string;
-  profileComplete?: boolean;
-}
-
 export default function ProfilePage() {
   const { user, logout, updateUser } = useAuth();
   const router = useRouter();
@@ -46,7 +37,7 @@ export default function ProfilePage() {
     );
   }
 
-  const profile: ProfileData = (user.profile as ProfileData) || {};
+  const profile = user.profile || {};
   let age = null;
   if (profile.dateOfBirth) {
     const dob = new Date(profile.dateOfBirth);
