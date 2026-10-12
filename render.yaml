@@ -1,0 +1,23 @@
+services:
+  - type: web
+    name: spandana-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 4000
+      # ⚠️ Set these in the Render Dashboard → Environment tab:
+      # MONGODB_URI  = mongodb+srv://nishilchavda:<password>@nishilcluster.itoulbc.mongodb.net/spandana?retryWrites=true&w=majority&appName=nishilcluster
+      # JWT_SECRET   = <your-long-random-secret>
+      # CORS_ORIGIN  = https://<your-vercel-app>.vercel.app
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ORIGIN
+        sync: false
