@@ -23,10 +23,28 @@ const { startLiveSensorStream, stopLiveSensorStream } = require("./services/sens
 const app    = express();
 const server = http.createServer(app);
 
-// CORS — exact origin required; wildcard '*' blocks credentialed requests
-const corsOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
+// CORS configuration
+// Normalizes origins by trimming trailing slashes to prevent preflight mismatch
+const rawOrigin = process.env.CORS_ORIGIN || "http://localhost:3000";
+const allowedOrigins = [
+  ...rawOrigin.split(",").map((o) => o.trim().replace(/\/+$/, "")),
+  "http://localhost:3000",
+].filter(Boolean);
+
+const checkCorsOrigin = (origin, callback) => {
+  if (!origin) return callback(null, true);
+  const normalized = origin.replace(/\/+$/, "");
+  if (
+    allowedOrigins.includes(normalized) ||
+    normalized.endsWith(".vercel.app")
+  ) {
+    return callback(null, true);
+  }
+  return callback(new Error(`Not allowed by CORS: ${origin}`));
+};
+
 app.use(cors({
-  origin:      corsOrigin,
+  origin:      checkCorsOrigin,
   credentials: true,   // allows browser to send/receive cookies cross-origin
   methods:     ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
@@ -52,8 +70,9 @@ app.get("/api/health", (_, res) => res.json({ status: "ok", ts: Date.now() }));
 // ---------------------------------------------------------------------------
 const io = new Server(server, {
   cors: {
-    origin: corsOrigin,
+    origin: checkCorsOrigin,
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
@@ -93,7 +112,7 @@ mongoose
     console.log(`[db] Connected to MongoDB: ${MONGO_URI}`);
     server.listen(PORT, () => {
       console.log(`[server] SPANDANA backend running on http://localhost:${PORT}`);
-      console.log(`[server] Socket.io ready — CORS origin: ${corsOrigin}`);
+      console.log(`[server] Socket.io ready — Allowed origins: ${allowedOrigins.join(", ")}`);
     });
   })
   .catch((err) => {
